@@ -3,7 +3,7 @@
 namespace App\Domain;
 
 class Categories {
-    const CaregoryDairy = "dairy";
+    const CategoryDairy = "dairy";
     const CategoryProduce = "produce";
     const CategoryMeat = "meat";
     const CategoryGrains = "grains";
@@ -16,7 +16,7 @@ class Categories {
 
     public static function listAllCategories(): array {
         return [
-            self::CaregoryDairy,
+            self::CategoryDairy,
             self::CategoryProduce,
             self::CategoryMeat,
             self::CategoryGrains,
