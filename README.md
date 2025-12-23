@@ -26,3 +26,24 @@ public/              # Entry point (index.php) and Routing
 * PHP 8.1 or higher
 * SQLite3 extension enabled
 * Composer (for autoloading)
+
+## 📥 Installation
+
+```bash
+git clone [https://github.com/your-username/homysync-php-api.git](https://github.com/your-username/homysync-php-api.git)
+cd homysync-php-api
+```
+
+```bash
+composer install
+```
+
+```bash
+composer dump-autoload
+```
+
+## 🏃 Installation
+
+```bash
+php -S localhost:8080 -t public
+```
