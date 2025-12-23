@@ -61,7 +61,8 @@ class AuthController {
                 "status" => 200,
                 "data" => [
                     "message" => "Login successful",
-                    "user" => $userData
+                    "token" => $userData['token'],
+                    "user" => $userData['user']
                 ]
             ];
         } catch (Exception $e) {

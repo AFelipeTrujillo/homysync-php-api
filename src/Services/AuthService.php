@@ -5,10 +5,19 @@ namespace App\Services;
 use App\Core\UserRepositoryInterface;
 use App\Domain\User;
 use Exception;
+use Firebase\JWT\JWT;
 
 class AuthService {
 
-    public function __construct(private UserRepositoryInterface $userRepository) {} 
+    private string $key;
+
+    public function __construct(private UserRepositoryInterface $userRepository) {
+        $this->key = $_ENV["JWT_SECRET"] ?? null;
+        
+        if(!$this->key) {
+            throw new Exception("JWT_SECRET environment variable is not set.");
+        }
+    } 
 
     public function register(string $email, string $password, string $name): User 
     {
@@ -37,12 +46,27 @@ class AuthService {
             throw new Exception("Invalid email or password.");
         }
 
+        $payload = [
+            'iss' => 'homysync-api',
+            'iat' => time(),
+            // valid for 1 hour
+            // TODO: move expiration time to config
+            'exp' => time() + (60 * 60),
+            'sub' => $user->id,
+            'user_name' => $user->name
+        ];
+
+        $token = JWT::encode($payload, $this->key, 'HS256');
+
         // In a real application, you would generate a JWT or session token here
         // TODO: Implement token generation
         return [
-            "id" => $user->id,
-            "email" => $user->email,
-            "name" => $user->name
+            "token" => $token,
+            "user" => [
+                "id" => $user->id,
+                "email" => $user->email,
+                "name" => $user->name
+            ]
         ];
     }
 }

@@ -6,6 +6,10 @@ use App\Adapters\Http\AuthController;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// 0. Load environment variables
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
 // 1. Set up the PDO connection
 $pdo = new PDO('sqlite:' . __DIR__ . '/../homysync.db');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
