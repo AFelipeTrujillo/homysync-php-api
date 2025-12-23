@@ -37,16 +37,28 @@ if ($requestUri === '/ping' && $requestMethod === 'GET') {
     exit;
 }
 
-if ($requestUri === '/auth/register' && $requestMethod === 'POST') {
+if ($requestUri === '/auth/register' && $requestMethod === 'POST') 
+{
     $input = json_decode(file_get_contents('php://input'), true);
     $reponse = $authController->register($input);
     http_response_code($reponse['status']);
     echo json_encode($reponse['data'] ?? ['error' => $reponse['error']]);
     exit;
+}
 
+if ($requestUri === '/auth/login' && $requestMethod === 'POST') 
+{
+    $input = json_decode(file_get_contents('php://input'), true);
+    $reponse = $authController->login($input);
+    http_response_code($reponse['status']);
+    echo json_encode($reponse['data'] ?? ['error' => $reponse['error']]);
+    exit;
 }
 
 http_response_code(404);
-echo json_encode(['error' => 'Not Found']);
+echo json_encode([
+    "status" => 404,
+    "data" => ["error" => "Endpoint not found."]
+]);
 
 

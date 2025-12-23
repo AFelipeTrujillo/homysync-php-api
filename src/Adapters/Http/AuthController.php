@@ -8,6 +8,11 @@ use Exception;
 class AuthController {
     public function __construct(private AuthService $authService) {}
 
+    /**
+     * Handle user registration
+     * @param array|null $input
+     * @return array
+     */
     public function register(?array $input) :array {
 
         if (!$input || !isset($input['email'], $input['password'], $input['name'])) {
@@ -31,6 +36,40 @@ class AuthController {
             return [
                 "status" => 500,
                 "error" => $e->getMessage()
+            ];
+        }
+    }
+    /**
+     * Handle user login
+     * @param array|null $input
+     * @return array
+     */
+    public function login(?array $input) :array
+    {
+        if (!$input || !isset($input['email'], $input['password'])) {
+            return [
+                "status" => 400,
+                "data" => [
+                    "error" => "Invalid input. 'email' and 'password' are required."
+                ]
+            ];
+        }
+
+        try {
+            $userData = $this->authService->login($input['email'], $input['password']);
+            return [
+                "status" => 200,
+                "data" => [
+                    "message" => "Login successful",
+                    "user" => $userData
+                ]
+            ];
+        } catch (Exception $e) {
+            return [
+                "status" => 401,
+                "data" => [
+                    "error" => $e->getMessage()
+                ]
             ];
         }
     }
