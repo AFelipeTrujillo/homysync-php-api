@@ -42,7 +42,7 @@ composer install
 composer dump-autoload
 ```
 
-## 🏃 Installation
+## 🏃 Running the API
 
 ```bash
 php -S localhost:8080 -t public
