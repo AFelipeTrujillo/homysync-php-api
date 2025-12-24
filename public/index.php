@@ -24,6 +24,15 @@ $pdo->exec('
     )'
 );
 
+$pdo->exec('
+    CREATE TABLE IF NOT EXISTS catalog_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        household_id INTEGER NOT NULL,
+        canonical_name TEXT NOT NULL,
+        category TEXT NOT NULL
+    )'
+);
+
 // 3. Injection of dependencies and instantiation
 $userRepository = new SQLiteUserRepository($pdo);
 $authService = new App\Services\AuthService($userRepository);
