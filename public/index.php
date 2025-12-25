@@ -1,8 +1,10 @@
 <?php 
 
 use App\Adapters\Persistence\SQLiteUserRepository;
+use App\Adapters\Persistence\SQLiteHouseholdRepository;
 use App\Services\AuthService;
 use App\Adapters\Http\AuthController;
+use App\Adapters\Http\AuthMiddleware;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -33,9 +35,28 @@ $pdo->exec('
     )'
 );
 
+$pdo->exec('
+    CREATE TABLE IF NOT EXISTS households (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL
+        timezone TEXT NOT NULL
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )'
+);
+
+$pdo->exec('
+    CREATE TABLE IF NOT EXISTS household_members (
+        household_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        PRIMARY KEY (household_id, user_id)
+    )'
+);
+
 // 3. Injection of dependencies and instantiation
 $userRepository = new SQLiteUserRepository($pdo);
-$authService = new App\Services\AuthService($userRepository);
+$householdRepository = new SQLiteHouseholdRepository($pdo);
+
+$authService = new AuthService($userRepository);
 $authController = new AuthController($authService);
 
 // 4. Handle the incoming HTTP request
@@ -65,6 +86,19 @@ if ($requestUri === '/auth/login' && $requestMethod === 'POST')
     $reponse = $authController->login($input);
     http_response_code($reponse['status']);
     echo json_encode($reponse['data'] ?? ['error' => $reponse['error']]);
+    exit;
+}
+
+if ($requestUri === '/households' && $requestMethod === 'POST') 
+{
+    $userData = AuthMiddleware::validateToken($_SERVER['HTTP_AUTHORIZATION']);
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    $householdService = new App\Services\HouseholdService($householdRepository);
+    $householdController = new App\Adapters\Http\HouseholdController($householdService);
+    $response = $householdController->create($userData, $input);
+    http_response_code($response['status']);
+    echo json_encode($response['data']);
     exit;
 }
 

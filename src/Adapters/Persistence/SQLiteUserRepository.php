@@ -10,7 +10,7 @@ class SQLiteUserRepository implements UserRepositoryInterface {
 
     public function __construct(private PDO $pdo) {}
 
-    public function save(User $user): void
+    public function save(User $user): int
     {
         $stmt = $this->pdo->prepare('
             INSERT INTO users (email, password_hash, name) 
@@ -21,6 +21,8 @@ class SQLiteUserRepository implements UserRepositoryInterface {
             ':password_hash' => $user->passwordHash,
             ':name' => $user->name,
         ]);
+
+        return (int)$this->pdo->lastInsertId();
     }
 
     public function findByEmail(string $email): ?User
