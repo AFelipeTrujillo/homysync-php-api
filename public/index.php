@@ -38,8 +38,8 @@ $pdo->exec('
 $pdo->exec('
     CREATE TABLE IF NOT EXISTS households (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL
-        timezone TEXT NOT NULL
+        name TEXT NOT NULL,
+        timezone TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )'
 );
