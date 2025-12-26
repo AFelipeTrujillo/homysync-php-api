@@ -21,7 +21,7 @@ class CatalogService {
      * @throws Exception
      * @return void
      */
-    public function addItemToCatalog(int $householdId, string $canonicalName, string $category): void {
+    public function addItem(int $householdId, string $canonicalName, string $category): void {
         
         // Validate canonical name
         if (empty(trim($canonicalName))) {

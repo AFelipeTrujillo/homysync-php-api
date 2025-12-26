@@ -127,6 +127,34 @@ if ($requestUri === '/households' && $requestMethod === 'GET')
     exit;
 }
 
+if ($requestUri === '/catalog' && $requestMethod === 'POST') {
+    $userData = AuthMiddleware::validateToken();
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    $catalogService = new App\Services\CatalogService(
+        new App\Adapters\Persistence\SQLiteCatalogItemRepository($pdo)
+    );
+    $catalogController = new App\Adapters\Http\CatalogController($catalogService);
+    $response = $catalogController->addItem($userData, $input);
+    http_response_code($response['status']);
+    echo json_encode($response['data']);
+    exit;
+}
+
+if (str_starts_with($requestUri, '/catalog') && $requestMethod === 'GET') {
+    
+    $userData = AuthMiddleware::validateToken();
+
+    $catalogService = new App\Services\CatalogService(
+        new App\Adapters\Persistence\SQLiteCatalogItemRepository($pdo)
+    );
+    $catalogController = new App\Adapters\Http\CatalogController($catalogService);
+    $response = $catalogController->getCatalog((int)$_GET['household_id']);
+    http_response_code($response['status']);
+    echo json_encode($response['data']);
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     "status" => 404,
