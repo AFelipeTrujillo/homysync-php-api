@@ -26,4 +26,17 @@ class HouseholdService
 
         return $householdId;
     }
+
+    public function updateHousehold(int $householdId, string $name, string $timezone): void
+    {
+        $household = $this->householdRepository->findById($householdId);
+        if (!$household) {
+            throw new \Exception("Household not found");
+        }
+
+        $household->name = $name;
+        $household->timezone = $timezone;
+
+        $this->householdRepository->update($household);
+    }
 }

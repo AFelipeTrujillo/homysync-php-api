@@ -62,4 +62,40 @@ class SQLiteHouseholdRepository implements HouseholdRepositoryInterface
 
         return $households;
     }
+
+    public function findById(int $householdId): ?Household
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT id, name, timezone, created_at 
+            FROM households 
+            WHERE id = :id');
+
+        $stmt->execute([':id' => $householdId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return new Household(
+                id: (int)$row['id'],
+                name: $row['name'],
+                timezone: $row['timezone'],
+                cretedAt: (int)$row['created_at']
+            );
+        }
+
+        return null;
+    }
+
+    public function update(Household $household): void
+    {
+        $stmt = $this->pdo->prepare('
+            UPDATE households 
+            SET name = :name, timezone = :timezone 
+            WHERE id = :id');
+
+        $stmt->execute([
+            ':name' => $household->name,
+            ':timezone' => $household->timezone,
+            ':id' => $household->id,
+        ]);
+    }
 }
