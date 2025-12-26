@@ -115,6 +115,18 @@ if ($requestUri === '/households' && $requestMethod === 'PUT')
     exit;
 }
 
+if ($requestUri === '/households' && $requestMethod === 'GET') 
+{
+    $userData = AuthMiddleware::validateToken($_SERVER['HTTP_AUTHORIZATION']);
+
+    $householdService = new App\Services\HouseholdService($householdRepository);
+    $householdController = new App\Adapters\Http\HouseholdController($householdService);
+    $response = $householdController->listUserHouseholds($userData);
+    http_response_code($response['status']);
+    echo json_encode($response['data']);
+    exit;
+}
+
 http_response_code(404);
 echo json_encode([
     "status" => 404,

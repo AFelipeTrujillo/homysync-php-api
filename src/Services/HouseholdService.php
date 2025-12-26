@@ -39,4 +39,9 @@ class HouseholdService
 
         $this->householdRepository->update($household);
     }
+
+    public function getUserHouseholds(int $userId): array
+    {
+        return $this->householdRepository->getUserHouseholds($userId);
+    }
 }

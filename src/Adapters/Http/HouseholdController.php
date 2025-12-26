@@ -80,4 +80,28 @@ class HouseholdController
         }
         return [];
     }
+
+    public function listUserHouseholds(array $userData) : array
+    {
+        try {
+
+            $households = $this->householdService->getUserHouseholds(
+                userId: $userData['sub']
+            );
+
+            return [
+                'status' => 200,
+                'data' => [
+                    'households' => $households
+                ]
+            ];
+
+        } catch (Exception $e) {
+            return [
+                'status' => 500,
+                'data' => ['error' => $e->getMessage()]
+            ];
+        }
+        return [];
+    }
 }
